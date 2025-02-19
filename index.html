@@ -35,6 +35,9 @@
             white-space: pre-wrap; /* Wrap long lines */
             word-wrap: break-word;
         }
+        .error {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -53,6 +56,16 @@
             const errorLog = document.getElementById('errorLog');
             errorLog.textContent = '';  // Tyhjennä aikaisemmat virheilmoitukset
 
+            // Tarkistetaan, onko koodi HTML-, Python- vai JavaScript-koodia
+            if (isHTMLCode(inputCode)) {
+                errorLog.textContent = "Virhe: HTML-koodia ei voida tarkistaa. Syötä JavaScript-koodia.";
+                return;
+            }
+            if (isPythonCode(inputCode)) {
+                errorLog.textContent = "Virhe: Python-koodia ei voida tarkistaa. Syötä JavaScript-koodia.";
+                return;
+            }
+
             // Yritetään luoda funktio annetusta koodista
             try {
                 new Function(inputCode);  // Tämä yrittää suorittaa koodin
@@ -64,6 +77,18 @@
 
             // Ilmoitetaan, jos koodi ei sisältänyt virheitä
             errorLog.textContent = 'Koodi ei sisällä virheitä!';
+        }
+
+        // Tarkistaa, onko koodi HTML-koodia
+        function isHTMLCode(code) {
+            const htmlPattern = /<[^>]*>/;  // Yksinkertainen regex HTML-tageille
+            return htmlPattern.test(code);
+        }
+
+        // Tarkistaa, onko koodi Python-koodia
+        function isPythonCode(code) {
+            const pythonPattern = /import\s+/;  // Yksinkertainen regex Pythonin "import"-avainsanalle
+            return pythonPattern.test(code);
         }
     </script>
 </body>
