@@ -1,36 +1,3 @@
-// Funktio päivittää merkkilaskurin ja tarkistaa, ylittääkö merkkimäärä sallitun rajan
-function updateCharCount() {
-    var code = document.getElementById('codeInput').value;
-    var charCount = code.length;
-    var maxLength = 2000;
-    var charCountDisplay = document.getElementById('charCount');
-    
-    charCountDisplay.textContent = 'Merkkimäärä: ' + charCount + '/' + maxLength;
-    
-    if (charCount > maxLength) {
-        charCountDisplay.style.color = 'red';
-    } else {
-        charCountDisplay.style.color = 'black';
-    }
-}
-
-// Funktio tarkistaa, onko koodissa ES6-ominaisuuksia
-function isES6(code) {
-    var es6Patterns = [
-        /\blet\b/,
-        /\bconst\b/,
-        /\([^\)]*\)\s*=>/,
-        /\bclass\b/,
-        /\bimport\b/,
-        /\bexport\b/
-    ];
-    
-    return es6Patterns.some(function(pattern) {
-        return pattern.test(code);
-    });
-}
-
-// Funktio koodin tarkistamiseen (HTML tai JavaScript)
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -64,6 +31,13 @@ function checkCode() {
         return;
     }
 
+    // **ES6-tarkistus** ennen JSHint-analyysiä
+    if (codeType === 'javascript' && isES6(code)) {
+        resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
+        resultDiv.style.color = 'red';
+        return;
+    }
+
     // HTML-tarkistus
     if (codeType === 'html') {
         var parser = new DOMParser();
@@ -80,11 +54,11 @@ function checkCode() {
         }
     }
 
-    // JavaScript-tarkistus (ilman ES6 ominaisuuksia)
+    // JavaScript-tarkistus (vain ES5 sallittu)
     else if (codeType === 'javascript') {
         var options = { esversion: 5 };
 
-        // JSHint tarkistaa ES6 koodin
+        // JSHint tarkistaa ES5-koodin
         var isValid = JSHINT(code, options);
         if (isValid) {
             resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
@@ -96,30 +70,5 @@ function checkCode() {
             });
             resultDiv.style.color = 'red';
         }
-
-        // Jos koodissa on ES6 ominaisuuksia, ilmoitetaan siitä
-        if (isES6(code)) {
-            resultDiv.textContent = 'Virhe: Käytä vain ES5-koodia, ES6 ei ole tuettu.';
-            resultDiv.style.color = 'red';
-            return;
-        }
     }
 }
-
-// Funktio tarkistaa, onko syötetty koodi JavaScriptiä
-function isJSCode(code) {
-    var jsPatterns = [
-        /\bfunction\b/,
-        /\bvar\b/,
-        /\blet\b/,
-        /\bconst\b/,
-        /\bconsole\.log\b/,
-        /\breturn\b/
-    ];
-    return jsPatterns.some(function(pattern) {
-        return pattern.test(code);
-    });
-}
-
-// Päivitetään merkkimäärä
-document.getElementById('codeInput').addEventListener('input', updateCharCount)
