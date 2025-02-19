@@ -133,14 +133,14 @@
         }
 
         // Jos valittu koodityyppi on JavaScript ja syötetään HTML-koodia
-        if (codeType === 'javascript' && !isJSCode(code)) {
+        if (codeType === 'javascript' && isJSCode(code)) {
             resultDiv.textContent = 'Et voi tarkistaa HTML-koodia, koska JavaScript on valittu.';
             resultDiv.style.color = 'red';
             return;
         }
 
         // Jos valittu koodityyppi on HTML ja syötetään JavaScript-koodia
-        if (codeType === 'html' && isJSCode(code)) {
+        if (codeType === 'html' && !isJSCode(code)) {
             resultDiv.textContent = 'Et voi tarkistaa JavaScript-koodia, koska HTML on valittu.';
             resultDiv.style.color = 'red';
             return;
