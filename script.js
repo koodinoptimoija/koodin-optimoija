@@ -9,14 +9,6 @@ function updateCharCount() {
     charCountDisplay.style.color = charCount > maxLength ? 'red' : 'black';
 }
 
-// Tarkistaa, sisältääkö koodi ES6-syntaksia
-function isES6(code) {
-    var es6Patterns = [
-        /\blet\b/, /\bconst\b/, /\([^\)]*\)\s*=>/, /\bclass\b/, /\bimport\b/, /\bexport\b/
-    ];
-    return es6Patterns.some(pattern => pattern.test(code));
-}
-
 // Tarkistaa, onko koodi HTML:ää
 function isHTMLCode(code) {
     return /<\s*([a-z]+)(?:\s+[^>]*)?>/i.test(code);
@@ -27,34 +19,46 @@ function isJSCode(code) {
     return /function|var|let|const|return|if|else|for|while|=>|class/.test(code);
 }
 
+// Tarkistaa, onko koodissa ES6-syntaksia
+function isES6(code) {
+    var es6Patterns = [
+        /\blet\b/,      // let-avainsana
+        /\bconst\b/,    // const-avainsana
+        /\([^\)]*\)\s*=>/, // arrow function
+        /\bclass\b/,    // class-syntaksi
+        /\bimport\b/,   // import
+        /\bexport\b/    // export
+    ];
+
+    return es6Patterns.some(function (pattern) {
+        return pattern.test(code);
+    });
+}
+
 // Tarkistaa käyttäjän syöttämän koodin
 function checkCode() {
     var code = document.getElementById('codeInput').value.trim();
     var resultDiv = document.getElementById('result');
     var codeType = document.getElementById('codeType').value;
 
-    // Jos koodi on tyhjä
     if (code === "") {
         resultDiv.textContent = 'Syötä koodi ennen tarkistusta.';
         resultDiv.style.color = 'red';
         return;
     }
 
-    // Jos koodi on liian pitkä
     if (code.length > 2000) {
         resultDiv.textContent = 'Koodin pituus ylittää sallitun rajan!';
         resultDiv.style.color = 'red';
         return;
     }
 
-    // Varmistetaan, että HTML valinnalla voi tarkistaa HTML:ää
     if (codeType === 'html' && !isHTMLCode(code)) {
         resultDiv.textContent = 'Syöttämäsi koodi ei vaikuta olevan HTML:ää.';
         resultDiv.style.color = 'red';
         return;
     }
 
-    // Varmistetaan, että JavaScript valinnalla voi tarkistaa JavaScriptiä
     if (codeType === 'javascript' && !isJSCode(code)) {
         resultDiv.textContent = 'Syöttämäsi koodi ei vaikuta olevan JavaScriptiä.';
         resultDiv.style.color = 'red';
@@ -68,28 +72,35 @@ function checkCode() {
         return;
     }
 
-    // Tarkistetaan HTML-koodi
     if (codeType === 'html') {
         checkHTML(code);
-    }
-    // Tarkistetaan JavaScript-koodi
-    else if (codeType === 'javascript') {
+    } else if (codeType === 'javascript') {
         checkJS(code);
     }
 }
 
-// HTML-koodin tarkistus
+// HTML-koodin tarkistus (tarkemmat säännöt)
 function checkHTML(code) {
     var resultDiv = document.getElementById('result');
 
-    // Tarkistetaan, että HTMLHint on käytettävissä
     if (typeof HTMLHint === 'undefined') {
         resultDiv.textContent = 'Virhe: HTMLHint ei ole ladattu.';
         resultDiv.style.color = 'red';
         return;
     }
 
-    var htmlHintResults = HTMLHint.verify(code);
+    var rules = {
+        "tag-pair": true,          // Tarkistaa, että kaikki tagit ovat parillisia
+        "attr-no-duplication": true, // Ei sallita saman attribuutin toistoa
+        "doctype-first": true,     // Varmistaa, että doctype on ensimmäisenä
+        "id-unique": true,         // ID-attribuutin on oltava uniikki
+        "src-not-empty": true,     // Varmistaa, että <img> ja <script> tageilla on src
+        "alt-require": true,       // Varmistaa, että kuvilla on alt-attribuutti
+        "spec-char-escape": true,  // Estää erikoismerkit ilman escapea
+        "attr-value-not-empty": true // Varmistaa, että attribuuteilla on arvot
+    };
+
+    var htmlHintResults = HTMLHint.verify(code, rules);
 
     if (htmlHintResults.length === 0) {
         resultDiv.textContent = 'HTML-koodi on validia!';
@@ -103,11 +114,10 @@ function checkHTML(code) {
     }
 }
 
-// JavaScript-koodin tarkistus
+// JavaScript-koodin tarkistus (vain ES5)
 function checkJS(code) {
     var resultDiv = document.getElementById('result');
 
-    // Tarkistetaan, että JSHint on käytettävissä
     if (typeof JSHINT === 'undefined') {
         resultDiv.textContent = 'Virhe: JSHint ei ole ladattu.';
         resultDiv.style.color = 'red';
