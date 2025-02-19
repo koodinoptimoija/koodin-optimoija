@@ -1,206 +1,41 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Koodin Tarkistus</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        p {
-            color: #34495e;
-            line-height: 1.5;
-        }
-        select, textarea, button {
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        #charCount {
-            font-size: 14px;
-        }
-        .warning-text {
-            background-color: #f39c12;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 20px;
-            font-size: 16px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koodin Tarkistus</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
 
-<h1>Koodin Tarkistus</h1>
-<p>Valitse, tarkistetaanko HTML vai JavaScript -koodi ja syötä koodi alla olevaan kenttään. Kenttään voi syöttää maksimissaan 2000 merkkiä.</p>
+  <h1>Koodin Tarkistus</h1>
+  <p>Valitse, tarkistetaanko HTML vai JavaScript -koodi ja syötä koodi alla olevaan kenttään. Kenttään voi syöttää maksimissaan 2000 merkkiä.</p>
 
-<!-- Valitse koodin tyyppi -->
-<label for="codeType">Valitse koodityyppi:</label>
-<select id="codeType">
+  <p class="warning-text">⚠️ Tämä tarkistus tukee vain ES5-koodia. ES6-syntaksia (esim. <code>let</code>, <code>const</code>, <code>class</code>) ei voi tarkistaa.</p>
+
+  <label for="codeType">Valitse koodityyppi:</label>
+  <select id="codeType" aria-describedby="codeTypeDesc">
     <option value="html">HTML</option>
     <option value="javascript">JavaScript</option>
-</select>
-<br><br>
+  </select>
+  <small id="codeTypeDesc">Valitse tarkistettavan koodin tyyppi.</small>
+  <br><br>
 
-<textarea id="codeInput" rows="10" cols="50" maxlength="2000"></textarea>
+  <textarea id="codeInput" rows="10" cols="50" maxlength="2000" aria-label="Syötä koodisi" oninput="updateCharCount()"></textarea>
+  
+  <div id="charCount">Merkkimäärä: 0/2000</div>
 
-<div id="charCount">Merkkimäärä: 0/2000</div>
+  <button onclick="checkCode()" aria-label="Tarkista koodi">Tarkista Koodi</button>
 
-<p class="warning-text">⚠️ Tämä tarkistus tukee vain ES5-koodia. ES6-syntaksia (esim. <code>let</code>, <code>const</code>, <code>class</code>) ei voi tarkistaa.</p>
+  <div id="result" aria-live="assertive"></div>
 
-<button onclick="checkCode()">Tarkista Koodi</button>
-
-<div id="result"></div>
-
-<!-- Ladataan JSHint -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
-
-<!-- Ladataan HTMLHint -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.13.1/htmlhint.min.js"></script>
-
-<script>
-    // Funktio päivittää merkkilaskurin ja tarkistaa, ylittääkö merkkimäärä sallitun rajan
-    function updateCharCount() {
-        var code = document.getElementById('codeInput').value;
-        var charCount = code.length;
-        var maxLength = 2000;
-        var charCountDisplay = document.getElementById('charCount');
-        
-        charCountDisplay.textContent = 'Merkkimäärä: ' + charCount + '/' + maxLength;
-        
-        if (charCount > maxLength) {
-            charCountDisplay.style.color = 'red';
-        } else {
-            charCountDisplay.style.color = 'black';
-        }
-    }
-
-    // Funktio tarkistaa, onko koodissa ES6-ominaisuuksia
-    function isES6(code) {
-        var es6Patterns = [
-            /\blet\b/,    // let-avainsana
-            /\bconst\b/,  // const-avainsana
-            /\([^\)]*\)\s*=>/, // arrow function
-            /\bclass\b/,   // class-syntaksi
-            /\bimport\b/,  // import
-            /\bexport\b/   // export
-        ];
-        
-        return es6Patterns.some(function(pattern) {
-            return pattern.test(code);
-        });
-    }
-
-    // Funktio koodin tarkistamiseen (HTML tai JavaScript)
-    function checkCode() {
-        var code = document.getElementById('codeInput').value;
-        var resultDiv = document.getElementById('result');
-        var codeType = document.getElementById('codeType').value;
-
-        // Tarkistetaan, että koodikenttä ei ole tyhjä
-        if (code.trim() === "") {
-            resultDiv.textContent = 'Syötä koodi ennen tarkistusta.';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // Jos koodin pituus on liian pitkä, estämme sen tarkistamisen
-        if (code.length > 2000) {
-            resultDiv.textContent = 'Koodin pituus ylittää sallitun rajan!';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // Jos valittu koodityyppi on JavaScript ja syötetään HTML-koodia
-        if (codeType === 'javascript' && isJSCode(code)) {
-            resultDiv.textContent = 'Et voi tarkistaa HTML-koodia, koska JavaScript on valittu.';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // Jos valittu koodityyppi on HTML ja syötetään JavaScript-koodia
-        if (codeType === 'html' && !isJSCode(code)) {
-            resultDiv.textContent = 'Et voi tarkistaa JavaScript-koodia, koska HTML on valittu.';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // Jos valittu koodityyppi on HTML
-        if (codeType === 'html') {
-            checkHTML(code);  // Kutsutaan HTML-tarkistusfunktiota
-        }
-        // Jos valittu koodityyppi on JavaScript
-        else if (codeType === 'javascript') {
-            checkJS(code);  // Kutsutaan JS-tarkistusfunktiota
-        }
-    }
-
-    // Funktio HTML-koodin tarkistamiseen
-    function checkHTML(code) {
-        var resultDiv = document.getElementById('result');
-        var htmlHintResults = HTMLHint.verify(code);
-
-        if (htmlHintResults.length === 0) {
-            resultDiv.textContent = 'HTML on validia!';
-            resultDiv.style.color = 'green';
-        } else {
-            resultDiv.textContent = 'Virheitä löytyi:';
-            resultDiv.style.color = 'red';
-
-            // HTMLHint virheilmoitusten tarkistaminen ja näyttäminen
-            htmlHintResults.forEach(function (error) {
-                resultDiv.textContent += '\nRivi ' + error.line + ': ' + error.message;
-            });
-        }
-    }
-
-    // Funktio JavaScript-koodin tarkistamiseen
-    function checkJS(code) {
-        var options = { esversion: 5 };  // Määritetään, että käytämme ES5
-        var isValid = JSHINT(code, options);
-        var resultDiv = document.getElementById('result');
-
-        if (isValid) {
-            resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
-            resultDiv.style.color = 'green';
-        } else {
-            resultDiv.textContent = 'Virheitä löytyi:\n';
-            JSHINT.errors.forEach(function (error) {
-                resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
-            });
-            resultDiv.style.color = 'red';
-        }
-    }
-
-    // Funktio tarkistamaan, onko koodi JavaScriptiä
-    function isJSCode(code) {
-        return /function|var|let|const|return|if|else|for|while/.test(code);
-    }
-
-    // Päivitetään merkkimäärä
-    document.getElementById('codeInput').addEventListener('input', updateCharCount);
-</script>
+  <!-- Ladataan HTMLHint -->
+  <script src="https://cdn.jsdelivr.net/npm/htmlhint@0.14.0/dist/htmlhint.min.js"></script>
+  <!-- Ladataan JSHint -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
+  <!-- Ladataan oma JavaScript -->
+  <script src="script.js"></script>
 
 </body>
 </html>
