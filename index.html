@@ -3,33 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScriptin Optimointi</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/terser/5.10.0/terser.min.js"></script> <!-- Terser -->
+    <title>JavaScriptin Optimointi ja Tarkistus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Optimoi JavaScript-koodisi</h1>
+    <h1>Optimoi ja Tarkista JavaScript-koodisi</h1>
     
-    <textarea id="inputCode" rows="10" cols="50" placeholder="Kirjoita tai liitä JavaScript-koodisi tänne..."></textarea><br><br>
+    <textarea id="inputCode" rows="10" placeholder="Kirjoita tai liitä JavaScript-koodisi tänne..."></textarea><br>
     <button onclick="optimizeCode()">Optimoi koodi</button>
     
     <h2>Optimoitu koodi:</h2>
-    <textarea id="outputCode" rows="10" cols="50" readonly></textarea>
+    <textarea id="outputCode" rows="10" readonly placeholder="Optimoitu koodi tulee tänne..."></textarea>
+
+    <h2>Virheet ja ilmoitukset:</h2>
+    <pre id="errorLog" style="background-color: #f9f9f9; padding: 10px; border: 1px solid #ccc;"></pre>
 
     <script>
+        // Funktio koodin optimointiin ja tarkistukseen
         function optimizeCode() {
             const inputCode = document.getElementById('inputCode').value;
+            const outputArea = document.getElementById('outputCode');
+            const errorLog = document.getElementById('errorLog');
+            errorLog.textContent = '';  // Tyhjennä virheilmoitukset
+            outputArea.value = '';  // Tyhjennä optimoitu koodi
 
-            // Käytä Terser-libreriaa minifioimaan koodi
+            // Tarkistetaan syntaksi ja virheet
             try {
-                const result = Terser.minify(inputCode);
-                if (result.error) {
-                    document.getElementById('outputCode').value = 'Virhe koodin optimoinnissa: ' + result.error;
-                } else {
-                    document.getElementById('outputCode').value = result.code;
-                }
-            } catch (error) {
-                document.getElementById('outputCode').value = 'Virhe: ' + error.message;
+                // Tarkistetaan koodin syntaksi
+                new Function(inputCode);  // Tämä yrittää luoda funktion annetusta koodista
+            } catch (e) {
+                errorLog.textContent = `Virhe: ${e.message}`;
+                return; // Jos virhe, lopetetaan
             }
+
+            // Tarkastellaan, onko koodissa turhia valkoisia merkkejä tai kommentteja
+            const optimizedCode = removeCommentsAndWhitespace(inputCode);
+
+            // Näytetään optimoitu koodi
+            outputArea.value = optimizedCode;
+
+            // Ilmoitetaan onnistumisesta
+            errorLog.textContent = 'Koodi on tarkistettu ja optimoitu.';
+        }
+
+        // Funktio kommenttien ja valkoisten merkkien poistamiseen
+        function removeCommentsAndWhitespace(code) {
+            // Poistetaan yksiriviset ja moniriviset kommentit
+            const codeWithoutComments = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
+            // Poistetaan turhat valkoiset merkit ja rivinvaihdot
+            const codeWithoutWhitespace = codeWithoutComments.replace(/\s+/g, ' ').trim();
+            return codeWithoutWhitespace;
         }
     </script>
 </body>
