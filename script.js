@@ -1,31 +1,3 @@
-// Funktio tarkistamaan, onko syötetty koodi JavaScriptiä
-function isJSCode(code) {
-    return /function|var|let|const|return|if|else|for|while/.test(code);
-}
-
-// Funktio tarkistamaan, onko koodi ES6-syntaksia
-function isES6(code) {
-    return /let|const|class|import|export/.test(code);
-}
-
-// Funktio HTML-koodin tarkistamiseen HTMLHintin avulla
-function checkHTML(code) {
-    const result = HTMLHint.verify(code);
-    const resultDiv = document.getElementById('result');
-
-    if (result.length > 0) {
-        resultDiv.textContent = 'Virheitä löytyi HTML-koodista:\n';
-        result.forEach(function (error) {
-            resultDiv.textContent += `Rivi ${error.line}: ${error.message}\n`;
-        });
-        resultDiv.style.color = 'red';
-    } else {
-        resultDiv.textContent = 'HTML-koodi on validia!';
-        resultDiv.style.color = 'green';
-    }
-}
-
-// Funktio koodin tarkistukseen
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -59,22 +31,14 @@ function checkCode() {
         return;
     }
 
-    // **Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa**
-    if (codeType === 'javascript' && isES6(code)) {
-        resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
-        resultDiv.style.color = 'red';
-        return;
-    }
-
-    // HTML-tarkistus
+    // Jos valittu koodityyppi on HTML
     if (codeType === 'html') {
+        // Kutsutaan HTML-tarkistusfunktiota
         checkHTML(code);
     }
-
-    // JavaScript-tarkistus
+    // Jos valittu koodityyppi on JavaScript
     else if (codeType === 'javascript') {
         var options = { esversion: 5 };
-
         var isValid = JSHINT(code, options);
         if (isValid) {
             resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
@@ -87,4 +51,31 @@ function checkCode() {
             resultDiv.style.color = 'red';
         }
     }
+}
+
+// Funktio HTML-koodin tarkistamiseen
+function checkHTML(code) {
+    const result = HTMLHint.verify(code); // Käytetään HTMLHintin tarkistusta
+    const resultDiv = document.getElementById('result');
+
+    if (result.length > 0) {
+        resultDiv.textContent = 'Virheitä löytyi HTML-koodista:\n';
+        result.forEach(function (error) {
+            resultDiv.textContent += `Rivi ${error.line}: ${error.message}\n`;
+        });
+        resultDiv.style.color = 'red';
+    } else {
+        resultDiv.textContent = 'HTML-koodi on validia!';
+        resultDiv.style.color = 'green';
+    }
+}
+
+// Funktio tarkistamaan, onko koodi JavaScriptiä
+function isJSCode(code) {
+    return /function|var|let|const|return|if|else|for|while/.test(code);
+}
+
+// Funktio tarkistamaan, onko koodissa ES6-syntaksia
+function isES6(code) {
+    return /let|const|class|import|export/.test(code);
 }
