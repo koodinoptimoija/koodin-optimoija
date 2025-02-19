@@ -1,3 +1,9 @@
+// Tarkistaa, onko koodissa ES6-syntaksia
+function isES6(code) {
+    return /let|const|class|import|export/.test(code);
+}
+
+// Funktio koodin tarkistukseen
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -56,7 +62,7 @@ function checkCode() {
 
     // JavaScript-tarkistus (vain ES5 sallittu)
     else if (codeType === 'javascript') {
-        var options = { esversion: 6 };
+        var options = { esversion: 5 };
 
         // JSHint tarkistaa ES5-koodin
         var isValid = JSHINT(code, options);
@@ -71,4 +77,10 @@ function checkCode() {
             resultDiv.style.color = 'red';
         }
     }
+}
+
+// Funktio tarkistamaan, onko syötetty koodi JavaScriptiä
+function isJSCode(code) {
+    // Tämä voi olla perus tarkistus: etsitään, onko koodissa JavaScript-avaimia, kuten "function" tai "var"
+    return /function|var|let|const|return|if|else|for|while/.test(code);
 }
