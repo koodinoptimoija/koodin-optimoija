@@ -1,19 +1,3 @@
-// Funktio merkkimäärän päivittämiseen
-function updateCharCount() {
-    var codeInput = document.getElementById('codeInput');
-    var charCount = document.getElementById('charCount');
-    var currentLength = codeInput.value.length;
-    charCount.textContent = 'Merkkimäärä: ' + currentLength + '/2000';
-
-    // Varmistetaan, että ei ylitetä 2000 merkin rajaa
-    if (currentLength > 2000) {
-        charCount.style.color = 'red';
-    } else {
-        charCount.style.color = 'black';
-    }
-}
-
-// **Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa**
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -47,7 +31,7 @@ function checkCode() {
         return;
     }
 
-    // **Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa**
+    // Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa
     if (codeType === 'javascript' && isES6(code)) {
         resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
         resultDiv.style.color = 'red';
@@ -98,16 +82,3 @@ function checkJS(code) {
         resultDiv.style.color = 'red';
     }
 }
-
-// Funktio tarkistamaan, onko koodi JavaScriptiä
-function isJSCode(code) {
-    return /function|var|let|const|return|if|else|for|while/.test(code);
-}
-
-// Funktio tarkistamaan, onko koodissa ES6-syntaksia
-function isES6(code) {
-    return /let|const|class|import|export/.test(code);
-}
-
-// Päivitetään merkkimäärä aina kun koodin syöttö muuttuu
-document.getElementById('codeInput').addEventListener('input', updateCharCount);
