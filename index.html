@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScriptin Optimointi ja Tarkistus</title>
+    <title>JavaScriptin Virheiden Tarkistus</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,55 +27,43 @@
         button:hover {
             background-color: #45a049;
         }
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-family: Consolas, monospace;
+            white-space: pre-wrap; /* Wrap long lines */
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
-    <h1>Optimoi ja Tarkista JavaScript-koodisi</h1>
+    <h1>JavaScript-koodin Virheiden Tarkistus</h1>
     
     <textarea id="inputCode" rows="10" placeholder="Kirjoita tai liitä JavaScript-koodisi tänne..."></textarea><br>
-    <button onclick="optimizeCode()">Optimoi koodi</button>
+    <button onclick="checkForErrors()">Tarkista virheet</button>
     
-    <h2>Optimoitu koodi:</h2>
-    <textarea id="outputCode" rows="10" readonly placeholder="Optimoitu koodi tulee tänne..."></textarea>
-
     <h2>Virheet ja ilmoitukset:</h2>
-    <pre id="errorLog" style="background-color: #f9f9f9; padding: 10px; border: 1px solid #ccc;"></pre>
+    <pre id="errorLog"></pre>
 
     <script>
-        // Funktio koodin optimointiin ja tarkistukseen
-        function optimizeCode() {
+        // Funktio virheiden tarkistamiseen
+        function checkForErrors() {
             const inputCode = document.getElementById('inputCode').value;
-            const outputArea = document.getElementById('outputCode');
             const errorLog = document.getElementById('errorLog');
-            errorLog.textContent = '';  // Tyhjennä virheilmoitukset
-            outputArea.value = '';  // Tyhjennä optimoitu koodi
+            errorLog.textContent = '';  // Tyhjennä aikaisemmat virheilmoitukset
 
-            // Tarkistetaan syntaksi ja virheet
+            // Yritetään luoda funktio annetusta koodista
             try {
-                // Tarkistetaan koodin syntaksi
-                new Function(inputCode);  // Tämä yrittää luoda funktion annetusta koodista
+                new Function(inputCode);  // Tämä yrittää suorittaa koodin
             } catch (e) {
-                errorLog.textContent = `Virhe: ${e.message}`;
-                return; // Jos virhe, lopetetaan
+                // Jos virhe, näytetään virheviesti
+                errorLog.textContent = `Virhe: ${e.message}\nRivi: ${e.lineNumber}`;
+                return;
             }
 
-            // Tarkastellaan, onko koodissa turhia valkoisia merkkejä tai kommentteja
-            const optimizedCode = removeCommentsAndWhitespace(inputCode);
-
-            // Näytetään optimoitu koodi
-            outputArea.value = optimizedCode;
-
-            // Ilmoitetaan onnistumisesta
-            errorLog.textContent = 'Koodi on tarkistettu ja optimoitu.';
-        }
-
-        // Funktio kommenttien ja valkoisten merkkien poistamiseen
-        function removeCommentsAndWhitespace(code) {
-            // Poistetaan yksiriviset ja moniriviset kommentit
-            const codeWithoutComments = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
-            // Poistetaan turhat valkoiset merkit ja rivinvaihdot
-            const codeWithoutWhitespace = codeWithoutComments.replace(/\s+/g, ' ').trim();
-            return codeWithoutWhitespace;
+            // Ilmoitetaan, jos koodi ei sisältänyt virheitä
+            errorLog.textContent = 'Koodi ei sisällä virheitä!';
         }
     </script>
 </body>
