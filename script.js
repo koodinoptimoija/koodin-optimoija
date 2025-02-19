@@ -56,7 +56,7 @@ function checkCode() {
 
     // JavaScript-tarkistus (vain ES5 sallittu)
     else if (codeType === 'javascript') {
-        var options = { esversion: 5 };
+        var options = { esversion: 6 };
 
         // JSHint tarkistaa ES5-koodin
         var isValid = JSHINT(code, options);
