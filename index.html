@@ -3,87 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Koodin Tarkistus</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        p {
-            color: #34495e;
-            line-height: 1.5;
-        }
-        select, textarea, button {
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        #charCount {
-            font-size: 14px;
-        }
-        .warning-text {
-            background-color: #f39c12;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 20px;
-            font-size: 16px;
-        }
-    </style>
+    <title>JavaScriptin Optimointi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/terser/5.10.0/terser.min.js"></script>
 </head>
 <body>
-
-    <h1>Koodin Tarkistus</h1>
-    <p>Valitse, tarkistetaanko HTML vai JavaScript -koodi ja syötä koodi alla olevaan kenttään. Kenttään voi syöttää maksimissaan 2000 merkkiä.</p>
-
-    <!-- Valitse koodin tyyppi -->
-    <label for="codeType">Valitse koodityyppi:</label>
-    <select id="codeType">
-        <option value="html">HTML</option>
-        <option value="javascript">JavaScript</option>
-    </select>
-    <br><br>
-
-    <textarea id="codeInput" rows="10" cols="50" maxlength="2000"></textarea>
+    <h1>Optimoi JavaScript-koodisi</h1>
     
-    <div id="charCount">Merkkimäärä: 0/2000</div>
-
-    <p class="warning-text">⚠️ Tämä tarkistus tukee vain ES5-koodia. ES6-syntaksia (esim. <code>let</code>, <code>const</code>, <code>class</code>) ei voi tarkistaa.</p>
-
-    <button onclick="checkCode()">Tarkista Koodi</button>
-
-    <div id="result"></div>
-
-    <!-- Ladataan JSHint -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
-
-    <!-- Ladataan HTMLHint -->
-    <script src="htmlhint.min.js"></script>
+    <textarea id="inputCode" rows="10" cols="50" placeholder="Kirjoita tai liitä JavaScript-koodisi tänne..."></textarea><br><br>
+    <button onclick="optimizeCode()">Optimoi koodi</button>
     
-     <!-- Lataa HTMLHint ennen script.js:ää -->
-    <script src="https://cdn.jsdelivr.net/npm/htmlhint@0.14.0/dist/htmlhint.min.js"></script>
+    <h2>Optimoitu koodi:</h2>
+    <textarea id="outputCode" rows="10" cols="50" readonly></textarea>
 
-    <!-- Varmistetaan, että skripti ladataan viimeisenä -->
-    <script src="script.js"></script>
+    <script>
+        function optimizeCode() {
+            const inputCode = document.getElementById('inputCode').value;
 
+            // Käytä Terser-libreriaa minifioimaan koodi
+            try {
+                const result = Terser.minify(inputCode);
+                if (result.error) {
+                    document.getElementById('outputCode').value = 'Virhe koodin optimoinnissa: ' + result.error;
+                } else {
+                    document.getElementById('outputCode').value = result.code;
+                }
+            } catch (error) {
+                document.getElementById('outputCode').value = 'Virhe: ' + error.message;
+            }
+        }
+    </script>
 </body>
 </html>
