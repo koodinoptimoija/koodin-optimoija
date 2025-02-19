@@ -1,3 +1,19 @@
+// Funktio merkkimäärän päivittämiseen
+function updateCharCount() {
+    var codeInput = document.getElementById('codeInput');
+    var charCount = document.getElementById('charCount');
+    var currentLength = codeInput.value.length;
+    charCount.textContent = 'Merkkimäärä: ' + currentLength + '/2000';
+
+    // Varmistetaan, että ei ylitetä 2000 merkin rajaa
+    if (currentLength > 2000) {
+        charCount.style.color = 'red';
+    } else {
+        charCount.style.color = 'black';
+    }
+}
+
+// Funktio koodin tarkistamiseen
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -50,8 +66,14 @@ function checkCode() {
 
 // Funktio HTML-koodin tarkistamiseen
 function checkHTML(code) {
-    var result = HTMLHint.verify(code); // Käytetään HTMLHintin tarkistusta
     var resultDiv = document.getElementById('result');
+    var result = HTMLHint.verify(code); // Käytetään HTMLHintin tarkistusta
+
+    // Jos HTML-koodissa on <script>-tageja, tarkistetaan myös JavaScript
+    var jsCode = extractJS(code); // Poimitaan JavaScript-koodi <script>-tageista
+    if (jsCode) {
+        checkJS(jsCode); // Tarkistetaan JavaScript-koodi erikseen
+    }
 
     if (result.length > 0) {
         resultDiv.textContent = 'Virheitä löytyi HTML-koodista:\n';
@@ -82,3 +104,27 @@ function checkJS(code) {
         resultDiv.style.color = 'red';
     }
 }
+
+// Funktio tarkistamaan, onko koodi JavaScriptiä
+function isJSCode(code) {
+    return /function|var|let|const|return|if|else|for|while/.test(code);
+}
+
+// Funktio tarkistamaan, onko koodissa ES6-syntaksia
+function isES6(code) {
+    return /let|const|class|import|export/.test(code);
+}
+
+// Funktio poimimaan JavaScript-koodia <script>-tageista HTML:ssä
+function extractJS(code) {
+    var scriptRegex = /<script[\s\S]*?>([\s\S]*?)<\/script>/g;
+    var jsCode = '';
+    var match;
+    while ((match = scriptRegex.exec(code)) !== null) {
+        jsCode += match[1] + '\n';
+    }
+    return jsCode.trim() ? jsCode : null; // Palautetaan JavaScript-koodi, jos löytyy
+}
+
+// Päivitetään merkkimäärä aina kun koodin syöttö muuttuu
+document.getElementById('codeInput').addEventListener('input', updateCharCount);
