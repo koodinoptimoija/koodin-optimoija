@@ -1,3 +1,19 @@
+// Funktio merkkimäärän päivittämiseen
+function updateCharCount() {
+    var codeInput = document.getElementById('codeInput');
+    var charCount = document.getElementById('charCount');
+    var currentLength = codeInput.value.length;
+    charCount.textContent = 'Merkkimäärä: ' + currentLength + '/2000';
+
+    // Varmistetaan, että ei ylitetä 2000 merkin rajaa
+    if (currentLength > 2000) {
+        charCount.style.color = 'red';
+    } else {
+        charCount.style.color = 'black';
+    }
+}
+
+// Funktio koodin tarkistamiseen
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -33,23 +49,11 @@ function checkCode() {
 
     // Jos valittu koodityyppi on HTML
     if (codeType === 'html') {
-        // Kutsutaan HTML-tarkistusfunktiota
-        checkHTML(code);
+        checkHTML(code);  // Kutsutaan HTML-tarkistusfunktiota
     }
     // Jos valittu koodityyppi on JavaScript
     else if (codeType === 'javascript') {
-        var options = { esversion: 5 };
-        var isValid = JSHINT(code, options);
-        if (isValid) {
-            resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
-            resultDiv.style.color = 'green';
-        } else {
-            resultDiv.textContent = 'Virheitä löytyi:\n';
-            JSHINT.errors.forEach(function (error) {
-                resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
-            });
-            resultDiv.style.color = 'red';
-        }
+        checkJS(code);  // Kutsutaan JS-tarkistusfunktiota
     }
 }
 
@@ -67,6 +71,24 @@ function checkHTML(code) {
     } else {
         resultDiv.textContent = 'HTML-koodi on validia!';
         resultDiv.style.color = 'green';
+    }
+}
+
+// Funktio JavaScript-koodin tarkistamiseen
+function checkJS(code) {
+    var options = { esversion: 5 };  // Määritetään, että käytämme ES5
+    var isValid = JSHINT(code, options);
+    var resultDiv = document.getElementById('result');
+
+    if (isValid) {
+        resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
+        resultDiv.style.color = 'green';
+    } else {
+        resultDiv.textContent = 'Virheitä löytyi:\n';
+        JSHINT.errors.forEach(function (error) {
+            resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
+        });
+        resultDiv.style.color = 'red';
     }
 }
 
