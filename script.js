@@ -79,7 +79,6 @@ function checkCode() {
     }
 }
 
-// HTML-koodin tarkistus (tarkemmat säännöt)
 function checkHTML(code) {
     var resultDiv = document.getElementById('result');
 
@@ -90,29 +89,30 @@ function checkHTML(code) {
     }
 
     var rules = {
-        "tag-pair": true,          // Tarkistaa, että kaikki tagit ovat parillisia
-        "attr-no-duplication": true, // Ei sallita saman attribuutin toistoa
-        "doctype-first": true,     // Varmistaa, että doctype on ensimmäisenä
-        "id-unique": true,         // ID-attribuutin on oltava uniikki
-        "src-not-empty": true,     // Varmistaa, että <img> ja <script> tageilla on src
-        "alt-require": true,       // Varmistaa, että kuvilla on alt-attribuutti
-        "spec-char-escape": true,  // Estää erikoismerkit ilman escapea
-        "attr-value-not-empty": true // Varmistaa, että attribuuteilla on arvot
+        "tag-pair": true,             // Varmistaa, että kaikki tagit ovat parillisia
+        "doctype-first": true,        // Varmistaa, että DOCTYPE on ensimmäisenä
+        "id-unique": true,            // ID-attribuutit eivät saa toistua
+        "spec-char-escape": true,     // Erikoismerkit pitää escapata (&, <, >)
+        "alt-require": true,          // Kuvilla oltava alt-attribuutti
+        "attr-no-duplication": true,  // Estää samojen attribuuttien toiston
+        "src-not-empty": true,        // <img> ja <script> tageilla pitää olla src
+        "attr-value-not-empty": true  // Varmistaa, että attribuuteilla on arvot
     };
 
     var htmlHintResults = HTMLHint.verify(code, rules);
 
     if (htmlHintResults.length === 0) {
-        resultDiv.textContent = 'HTML-koodi on validia!';
+        resultDiv.textContent = '✅ HTML-koodi on validia!';
         resultDiv.style.color = 'green';
     } else {
-        resultDiv.innerHTML = 'Virheitä löytyi HTML-koodista:<br>';
+        resultDiv.innerHTML = '❌ Virheitä löytyi HTML-koodista:<br>';
         htmlHintResults.forEach(error => {
-            resultDiv.innerHTML += `Rivi ${error.line}: ${error.message}<br>`;
+            resultDiv.innerHTML += `🔹 Rivi ${error.line}: ${error.message}<br>`;
         });
         resultDiv.style.color = 'red';
     }
 }
+
 
 // JavaScript-koodin tarkistus (vain ES5)
 function checkJS(code) {
