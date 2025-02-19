@@ -31,7 +31,13 @@ function checkHTML(code) {
         return;
     }
 
-    var rules = { "tag-pair": true, "doctype-first": true, "id-unique": true };
+    var rules = { 
+        "tag-pair": true, 
+        "doctype-first": true, 
+        "id-unique": true,
+        "attr-lowercase": true,  // Attribuuttien pienet kirjaimet
+        "alt-require": true      // Kuvien alt-tekstit
+    };
     var errors = HTMLHint.verify(code, rules);
 
     if (errors.length === 0) {
