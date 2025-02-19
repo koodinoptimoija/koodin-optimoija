@@ -14,13 +14,6 @@ function updateCharCount() {
 }
 
 // **Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa**
-    if (codeType === 'javascript' && isES6(code)) {
-        resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
-        resultDiv.style.color = 'red';
-        return;
-    }
-
-// Funktio koodin tarkistamiseen
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -50,6 +43,13 @@ function checkCode() {
     // Jos valittu koodityyppi on HTML ja syötetään JavaScript-koodia
     if (codeType === 'html' && isJSCode(code)) {
         resultDiv.textContent = 'Et voi tarkistaa JavaScript-koodia, koska HTML on valittu.';
+        resultDiv.style.color = 'red';
+        return;
+    }
+
+    // **Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa**
+    if (codeType === 'javascript' && isES6(code)) {
+        resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
         resultDiv.style.color = 'red';
         return;
     }
@@ -108,3 +108,6 @@ function isJSCode(code) {
 function isES6(code) {
     return /let|const|class|import|export/.test(code);
 }
+
+// Päivitetään merkkimäärä aina kun koodin syöttö muuttuu
+document.getElementById('codeInput').addEventListener('input', updateCharCount);
