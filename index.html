@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satunnaiskoodia</title>
+    <title>JavaScriptin Optimointi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/terser/5.10.0/terser.min.js"></script>
 </head>
 <body>
-    <h1>Satunnainen Koodi</h1>
+    <h1>Optimoi JavaScript-koodisi</h1>
     
-    <button onclick="naytaSatunnainenLuku()">Näytä satunnainen luku</button>
-    <button onclick="naytaSatunnainenHedelma()">Näytä satunnainen hedelmä</button>
-    <button onclick="naytaSekoitettuLista()">Näytä sekoitettu lista</button>
+    <textarea id="inputCode" rows="10" cols="50" placeholder="Kirjoita tai liitä JavaScript-koodisi tänne..."></textarea><br><br>
+    <button onclick="optimizeCode()">Optimoi koodi</button>
     
-    <p id="output"></p>
-    
-    <script src="script.js"></script> <!-- Viittaa erilliseen JavaScript-tiedostoon -->
+    <h2>Optimoitu koodi:</h2>
+    <textarea id="outputCode" rows="10" cols="50" readonly></textarea>
+
+    <script>
+        function optimizeCode() {
+            const inputCode = document.getElementById('inputCode').value;
+
+            // Käytä Terser-libreriaa minifioimaan koodi
+            try {
+                const result = Terser.minify(inputCode);
+                if (result.error) {
+                    document.getElementById('outputCode').value = 'Virhe koodin optimoinnissa: ' + result.error;
+                } else {
+                    document.getElementById('outputCode').value = result.code;
+                }
+            } catch (error) {
+                document.getElementById('outputCode').value = 'Virhe: ' + error.message;
+            }
+        }
+    </script>
 </body>
 </html>
