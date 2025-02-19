@@ -72,4 +72,6 @@ function checkJS(code) {
 
 // Estetään ES6-syntaksi
 function isES6(code) {
-    return /\
+    return /\b(let|const|class|import|export|=>)\b/.test(code);
+}
+s
