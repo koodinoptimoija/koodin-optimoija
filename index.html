@@ -1,201 +1,31 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Koodin Tarkistus</title>
-  <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f4f4f4;
-    }
-    h1 {
-        color: #2c3e50;
-    }
-    p {
-        color: #34495e;
-        line-height: 1.5;
-    }
-    select, textarea, button {
-        padding: 10px;
-        margin: 10px 0;
-        font-size: 16px;
-    }
-    button {
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #2980b9;
-    }
-    #result {
-        margin-top: 20px;
-        font-weight: bold;
-        font-size: 18px;
-    }
-    #charCount {
-        font-size: 14px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koodin Tarkistus</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.10.2/htmlhint.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1 { color: #2c3e50; }
+        textarea, button { padding: 10px; margin: 10px 0; font-size: 16px; width: 100%; }
+        button { background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #2980b9; }
+        #result { margin-top: 20px; font-weight: bold; font-size: 18px; }
+    </style>
 </head>
 <body>
 
-  <h1>Koodin Tarkistus</h1>
-  <p>Valitse, tarkistetaanko HTML vai JavaScript -koodi ja syötä koodi alla olevaan kenttään. Kenttään voi syöttää maksimissaan 2000 merkkiä.</p>
+    <h1>Koodin Tarkistus</h1>
+    <p>Syötä koodi alla olevaan kenttään ja tarkista virheet.</p>
 
-  <!-- Valitse koodin tyyppi -->
-  <label for="codeType">Valitse koodityyppi:</label>
-  <select id="codeType">
-    <option value="html">HTML</option>
-    <option value="javascript">JavaScript</option>
-  </select>
-  <br><br>
+    <textarea id="codeInput" rows="10" cols="50" placeholder="Syötä koodi tähän..."></textarea>
+    <button onclick="checkCode()">Tarkista Koodi</button>
 
-  <textarea id="codeInput" rows="10" cols="50" maxlength="2000"></textarea>
-  
-  <div id="charCount">Merkkimäärä: 0/2000</div>
+    <div id="result"></div>
 
-  <button onclick="checkCode()">Tarkista Koodi</button>
-
-  <div id="result"></div>
-
-  <!-- Ladataan JSHint -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/0.10.2/jshint.min.js"></script>
-
-  <script>
-    // Funktio päivittää merkkilaskurin ja tarkistaa, ylittääkö merkkimäärä sallitun rajan
-    function updateCharCount() {
-        var code = document.getElementById('codeInput').value;
-        var charCount = code.length;
-        var maxLength = 2000;
-        var charCountDisplay = document.getElementById('charCount');
-        
-        charCountDisplay.textContent = 'Merkkimäärä: ' + charCount + '/' + maxLength;
-        
-        if (charCount > maxLength) {
-            charCountDisplay.style.color = 'red';
-        } else {
-            charCountDisplay.style.color = 'black';
-        }
-    }
-
-    // Funktio tarkistaa, onko koodissa ES6-ominaisuuksia
-    function isES6(code) {
-        var es6Patterns = [
-            /\blet\b/,    // let-avainsana
-            /\bconst\b/,  // const-avainsana
-            /\([^\)]*\)\s*=>/, // arrow function
-            /\bclass\b/,   // class-syntaksi
-            /\bimport\b/,  // import
-            /\bexport\b/   // export
-        ];
-        
-        return es6Patterns.some(function(pattern) {
-            return pattern.test(code);
-        });
-    }
-
-    // Funktio koodin tarkistamiseen (HTML tai JavaScript)
-    function checkCode() {
-        var code = document.getElementById('codeInput').value;
-        var resultDiv = document.getElementById('result');
-        var codeType = document.getElementById('codeType').value;
-
-        // Tarkistetaan, että koodikenttä ei ole tyhjä
-        if (code.trim() === "") {
-            resultDiv.textContent = 'Syötä koodi ennen tarkistusta.';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // Jos koodin pituus on liian pitkä, estämme sen tarkistamisen
-        if (code.length > 2000) {
-            resultDiv.textContent = 'Koodin pituus ylittää sallitun rajan!';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // Jos valittu koodityyppi on JavaScript ja syötetään HTML-koodia
-        if (codeType === 'javascript' && !isJSCode(code)) {
-            resultDiv.textContent = 'Et voi tarkistaa HTML-koodia, koska JavaScript on valittu.';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // Jos valittu koodityyppi on HTML ja syötetään JavaScript-koodia
-        if (codeType === 'html' && isJSCode(code)) {
-            resultDiv.textContent = 'Et voi tarkistaa JavaScript-koodia, koska HTML on valittu.';
-            resultDiv.style.color = 'red';
-            return;
-        }
-
-        // HTML-tarkistus
-        if (codeType === 'html') {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(code, 'text/html');
-            
-            // Tarkistetaan, että HTML on validia
-            var error = doc.querySelector('parsererror');
-            if (error) {
-                resultDiv.textContent = 'Virheellinen HTML: ' + error.textContent;
-                resultDiv.style.color = 'red';
-            } else {
-                resultDiv.textContent = 'HTML on validia!';
-                resultDiv.style.color = 'green';
-            }
-        }
-
-        // JavaScript-tarkistus (ilman ES6 ominaisuuksia)
-        else if (codeType === 'javascript') {
-            var options = {
-                esversion: 5 // Asetetaan tarkistamaan vain ES5 koodi, mutta ilman strict-pakkoa
-            };
-
-            // JSHint tarkistaa ES6 koodin
-            var isValid = JSHINT(code, options);
-            if (isValid) {
-                resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
-                resultDiv.style.color = 'green';
-            } else {
-                resultDiv.textContent = 'Virheitä löytyi:\n';
-                JSHINT.errors.forEach(function (error) {
-                    resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
-                });
-                resultDiv.style.color = 'red';
-            }
-
-            // Jos koodissa on ES6 ominaisuuksia, ilmoitetaan siitä
-            if (isES6(code)) {
-                resultDiv.textContent = 'Virhe: Käytä vain ES5-koodia, ES6 ei ole tuettu.';
-                resultDiv.style.color = 'red';
-                return;
-            }
-        }
-    }
-
-    // Funktio tarkistaa, onko syötetty koodi JavaScriptiä
-    function isJSCode(code) {
-        // Perustarkistus: katsotaan, onko koodissa tyypillisiä JavaScript-ominaisuuksia
-        var jsPatterns = [
-            /\bfunction\b/,
-            /\bvar\b/,
-            /\blet\b/,
-            /\bconst\b/,
-            /\bconsole\.log\b/,
-            /\breturn\b/
-        ];
-        return jsPatterns.some(function(pattern) {
-            return pattern.test(code);
-        });
-    }
-
-    // Päivitetään merkkimäärä
-    document.getElementById('codeInput').addEventListener('input', updateCharCount);
-  </script>
+    <script src="script.js"></script>
 
 </body>
 </html>
