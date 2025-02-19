@@ -40,6 +40,14 @@
     #charCount {
         font-size: 14px;
     }
+    .warning-text {
+        background-color: #f39c12;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 20px;
+        font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -58,6 +66,8 @@
   <textarea id="codeInput" rows="10" cols="50" maxlength="2000"></textarea>
   
   <div id="charCount">Merkkimäärä: 0/2000</div>
+
+  <p class="warning-text">⚠️ Tämä tarkistus tukee vain ES5-koodia. ES6-syntaksia (esim. <code>let</code>, <code>const</code>, <code>class</code>) ei voi tarkistaa.</p>
 
   <button onclick="checkCode()">Tarkista Koodi</button>
 
