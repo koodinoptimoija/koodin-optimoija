@@ -1,3 +1,32 @@
+// Funktio tarkistamaan, onko syötetty koodi JavaScriptiä
+function isJSCode(code) {
+    return /function|var|let|const|return|if|else|for|while/.test(code);
+}
+
+// Funktio tarkistamaan, onko koodi ES6-syntaksia
+function isES6(code) {
+    return /let|const|class|import|export/.test(code);
+}
+
+// Funktio HTML-koodin tarkistamiseen HTMLHintin avulla
+function checkHTML(code) {
+    const result = HTMLHint.verify(code);
+
+    const resultDiv = document.getElementById('result');
+
+    if (result.length > 0) {
+        resultDiv.textContent = 'Virheitä löytyi HTML-koodista:\n';
+        result.forEach(function (error) {
+            resultDiv.textContent += `Rivi ${error.line}: ${error.message}\n`;
+        });
+        resultDiv.style.color = 'red';
+    } else {
+        resultDiv.textContent = 'HTML-koodi on validia!';
+        resultDiv.style.color = 'green';
+    }
+}
+
+// Funktio koodin tarkistukseen
 function checkCode() {
     var code = document.getElementById('codeInput').value;
     var resultDiv = document.getElementById('result');
@@ -31,26 +60,12 @@ function checkCode() {
         return;
     }
 
-   // Funktio HTML-koodin tarkistamiseen HTMLHintin avulla
-function checkHTML(code) {
-    const result = HTMLHint.verify(code);
-    
-    const resultDiv = document.getElementById('result');
-
-    if (result.length > 0) {
-        resultDiv.textContent = 'Virheitä löytyi HTML-koodista:\n';
-        result.forEach(function (error) {
-            resultDiv.textContent += `Rivi ${error.line}: ${error.message}\n`;
-        });
-        resultDiv.style.color = 'red';
-    } else {
-        resultDiv.textContent = 'HTML-koodi on validia!';
-        resultDiv.style.color = 'green';
+    // HTML-tarkistus
+    if (codeType === 'html') {
+        checkHTML(code);
     }
-}
- 
 
-    // JavaScript-koodin tarkistus
+    // JavaScript-tarkistus
     else if (codeType === 'javascript') {
         var options = { esversion: 5 };
 
@@ -66,12 +81,4 @@ function checkHTML(code) {
             resultDiv.style.color = 'red';
         }
     }
-}
-
-function isJSCode(code) {
-    return /function|var|let|const|return|if|else|for|while/.test(code);
-}
-
-function isES6(code) {
-    return /let|const|class|import|export/.test(code);
 }
