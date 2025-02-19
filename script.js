@@ -1,143 +1,75 @@
-// Päivittää merkkilaskurin
-function updateCharCount() {
+function checkCode() {
     var code = document.getElementById('codeInput').value;
-    var charCount = code.length;
-    var maxLength = 2000;
-    var charCountDisplay = document.getElementById('charCount');
+    var resultDiv = document.getElementById('result');
 
-    charCountDisplay.textContent = 'Merkkimäärä: ' + charCount + '/' + maxLength;
-    charCountDisplay.style.color = charCount > maxLength ? 'red' : 'black';
-}
+    if (code.trim() === "") {
+        resultDiv.textContent = "⚠️ Syötä koodi ennen tarkistusta!";
+        resultDiv.style.color = "red";
+        return;
+    }
 
-// Tarkistaa, onko koodi HTML:ää
-function isHTMLCode(code) {
-    return /<\s*([a-z]+)(?:\s+[^>]*)?>/i.test(code);
+    // Tunnistetaan koodityyppi automaattisesti
+    if (isJSCode(code)) {
+        checkJS(code);
+    } else {
+        checkHTML(code);
+    }
 }
 
 // Tarkistaa, onko koodi JavaScriptiä
 function isJSCode(code) {
-    return /function|var|let|const|return|if|else|for|while|=>|class/.test(code);
+    return /function|var|let|const|return|if|else|for|while/.test(code);
 }
 
-// Tarkistaa, onko koodissa ES6-syntaksia
-function isES6(code) {
-    var es6Patterns = [
-        /\blet\b/,      // let-avainsana
-        /\bconst\b/,    // const-avainsana
-        /\([^\)]*\)\s*=>/, // arrow function
-        /\bclass\b/,    // class-syntaksi
-        /\bimport\b/,   // import
-        /\bexport\b/    // export
-    ];
-
-    return es6Patterns.some(function (pattern) {
-        return pattern.test(code);
-    });
-}
-
-// Tarkistaa käyttäjän syöttämän koodin
-function checkCode() {
-    var code = document.getElementById('codeInput').value.trim();
-    var resultDiv = document.getElementById('result');
-    var codeType = document.getElementById('codeType').value;
-
-    if (code === "") {
-        resultDiv.textContent = 'Syötä koodi ennen tarkistusta.';
-        resultDiv.style.color = 'red';
-        return;
-    }
-
-    if (code.length > 2000) {
-        resultDiv.textContent = 'Koodin pituus ylittää sallitun rajan!';
-        resultDiv.style.color = 'red';
-        return;
-    }
-
-    if (codeType === 'html' && !isHTMLCode(code)) {
-        resultDiv.textContent = 'Syöttämäsi koodi ei vaikuta olevan HTML:ää.';
-        resultDiv.style.color = 'red';
-        return;
-    }
-
-    if (codeType === 'javascript' && !isJSCode(code)) {
-        resultDiv.textContent = 'Syöttämäsi koodi ei vaikuta olevan JavaScriptiä.';
-        resultDiv.style.color = 'red';
-        return;
-    }
-
-    // Estetään ES6-koodi
-    if (codeType === 'javascript' && isES6(code)) {
-        resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
-        resultDiv.style.color = 'red';
-        return;
-    }
-
-    if (codeType === 'html') {
-        checkHTML(code);
-    } else if (codeType === 'javascript') {
-        checkJS(code);
-    }
-}
-
+// Tarkistaa HTML-koodin virheet
 function checkHTML(code) {
     var resultDiv = document.getElementById('result');
 
-    if (typeof HTMLHint === 'undefined') {
-        resultDiv.textContent = 'Virhe: HTMLHint ei ole ladattu.';
-        resultDiv.style.color = 'red';
+    if (typeof HTMLHint === "undefined") {
+        resultDiv.textContent = "Virhe: HTMLHint ei ole ladattu.";
+        resultDiv.style.color = "red";
         return;
     }
 
-    var rules = {
-        "tag-pair": true,             // Varmistaa, että kaikki tagit ovat parillisia
-        "doctype-first": true,        // Varmistaa, että DOCTYPE on ensimmäisenä
-        "id-unique": true,            // ID-attribuutit eivät saa toistua
-        "spec-char-escape": true,     // Erikoismerkit pitää escapata (&, <, >)
-        "alt-require": true,          // Kuvilla oltava alt-attribuutti
-        "attr-no-duplication": true,  // Estää samojen attribuuttien toiston
-        "src-not-empty": true,        // <img> ja <script> tageilla pitää olla src
-        "attr-value-not-empty": true  // Varmistaa, että attribuuteilla on arvot
-    };
+    var rules = { "tag-pair": true, "doctype-first": true, "id-unique": true };
+    var errors = HTMLHint.verify(code, rules);
 
-    var htmlHintResults = HTMLHint.verify(code, rules);
-
-    if (htmlHintResults.length === 0) {
-        resultDiv.textContent = '✅ HTML-koodi on validia!';
-        resultDiv.style.color = 'green';
+    if (errors.length === 0) {
+        resultDiv.textContent = "✅ HTML-koodi on validia!";
+        resultDiv.style.color = "green";
     } else {
-        resultDiv.innerHTML = '❌ Virheitä löytyi HTML-koodista:<br>';
-        htmlHintResults.forEach(error => {
+        resultDiv.innerHTML = "❌ Virheitä löytyi:<br>";
+        errors.forEach(error => {
             resultDiv.innerHTML += `🔹 Rivi ${error.line}: ${error.message}<br>`;
         });
-        resultDiv.style.color = 'red';
+        resultDiv.style.color = "red";
     }
 }
 
-
-// JavaScript-koodin tarkistus (vain ES5)
+// Tarkistaa JavaScript-koodin virheet (vain ES5)
 function checkJS(code) {
     var resultDiv = document.getElementById('result');
 
-    if (typeof JSHINT === 'undefined') {
-        resultDiv.textContent = 'Virhe: JSHint ei ole ladattu.';
-        resultDiv.style.color = 'red';
+    if (isES6(code)) {
+        resultDiv.textContent = "⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!";
+        resultDiv.style.color = "red";
         return;
     }
 
-    var options = { esversion: 5 };
-    var isValid = JSHINT(code, options);
+    var isValid = JSHINT(code, { esversion: 5 });
 
     if (isValid) {
-        resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
-        resultDiv.style.color = 'green';
+        resultDiv.textContent = "✅ JavaScript-koodi on virheetöntä!";
+        resultDiv.style.color = "green";
     } else {
-        resultDiv.innerHTML = 'Virheitä löytyi JavaScript-koodista:<br>';
+        resultDiv.innerHTML = "❌ Virheitä löytyi JavaScript-koodista:<br>";
         JSHINT.errors.forEach(error => {
-            resultDiv.innerHTML += `Rivi ${error.line}: ${error.reason}<br>`;
+            resultDiv.innerHTML += `🔹 Rivi ${error.line}: ${error.reason}<br>`;
         });
-        resultDiv.style.color = 'red';
+        resultDiv.style.color = "red";
     }
 }
 
-// Päivittää merkkilaskurin käyttäjän kirjoittaessa
-document.getElementById('codeInput').addEventListener('input', updateCharCount);
+// Estetään ES6-syntaksi
+function isES6(code) {
+    return /\
