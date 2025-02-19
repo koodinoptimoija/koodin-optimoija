@@ -1,0 +1,134 @@
+/* Koko sivun taustaväri ja fontit */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f0f0; /* Vaalea tausta */
+    color: #333333; /* Tumma teksti */
+    height: 100vh; /* Koko sivun korkeus */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+/* Satunnainen taustaväri joka 5 sekunnin välein */
+@keyframes randomBackgroundColor {
+    0% {
+        background-color: #f39c12;
+    }
+    25% {
+        background-color: #16a085;
+    }
+    50% {
+        background-color: #8e44ad;
+    }
+    75% {
+        background-color: #2980b9;
+    }
+    100% {
+        background-color: #e74c3c;
+    }
+}
+
+body {
+    animation: randomBackgroundColor 5s infinite;
+}
+
+/* Pääotsikko */
+h1 {
+    color: #fff;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    animation: fadeIn 3s ease-in-out;
+}
+
+/* Pieni teksti ja selitykset */
+p {
+    font-size: 1.2rem;
+    color: #ecf0f1;
+    margin-top: 10px;
+    animation: slideIn 1s ease-in-out;
+}
+
+/* Nappien ulkoasu ja animaatio */
+button {
+    padding: 15px 30px;
+    background-color: #3498db;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Nappi hover-tilassa */
+button:hover {
+    background-color: #2980b9;
+    transform: scale(1.1);
+}
+
+/* Nappi painettu animaatio */
+button:active {
+    transform: scale(0.9);
+    background-color: #1abc9c;
+}
+
+/* Animaatio: Tekstin ilmestyminen (fade-in) */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Animaatio: Liukuva teksti */
+@keyframes slideIn {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Pienet varjot ja pyöristetyt kulmat */
+.card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    animation: zoomIn 1s ease-out;
+}
+
+/* Animaatio: Zoom-in (laajentuminen) */
+@keyframes zoomIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.warning-text {
+    color: red;
+    font-weight: bold;
+    background-color: #ffe6e6;
+    padding: 10px;
+    border: 1px solid red;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
