@@ -25,8 +25,9 @@ function isJSCode(code) {
 function checkHTML(code) {
     var resultDiv = document.getElementById('result');
 
+    // Tarkistetaan onko HTMLHint ladattu
     if (typeof HTMLHint === "undefined") {
-        resultDiv.textContent = "Virhe: HTMLHint ei ole ladattu.";
+        resultDiv.textContent = "⚠️ Virhe: HTMLHint ei ole ladattu. HTML-tarkistus ei toimi.";
         resultDiv.style.color = "red";
         return;
     }
