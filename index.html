@@ -21,7 +21,7 @@
   <small id="codeTypeDesc">Valitse tarkistettavan koodin tyyppi.</small>
   <br><br>
 
-  <textarea id="codeInput" rows="10" cols="50" maxlength="2000" aria-label="Syötä koodisi"></textarea>
+  <textarea id="codeInput" rows="10" cols="50" maxlength="2000" aria-label="Syötä koodisi" oninput="updateCharCount()"></textarea>
   
   <div id="charCount">Merkkimäärä: 0/2000</div>
 
@@ -29,8 +29,11 @@
 
   <div id="result" aria-live="assertive"></div>
 
+  <!-- Ladataan HTMLHint -->
+  <script src="https://unpkg.com/htmlhint@0.14.1/dist/htmlhint.min.js"></script>
   <!-- Ladataan JSHint -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
+  <!-- Ladataan oma JavaScript -->
   <script src="script.js"></script>
 
 </body>
