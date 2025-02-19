@@ -49,6 +49,10 @@
         font-size: 16px;
     }
   </style>
+
+  <!-- Varmista, että HTMLHint on ladattu ennen tarkistusta -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.13.1/htmlhint.min.js"></script>
+
 </head>
 <body>
 
@@ -202,7 +206,7 @@
             return pattern.test(code);
         });
     }
-
+  
     // Päivitetään merkkimäärä
     document.getElementById('codeInput').addEventListener('input', updateCharCount);
   </script>
