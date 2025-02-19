@@ -49,10 +49,6 @@
         font-size: 16px;
     }
   </style>
-
-  <!-- Varmista, että HTMLHint on ladattu ennen tarkistusta -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.13.1/htmlhint.min.js"></script>
-
 </head>
 <body>
 
@@ -79,6 +75,9 @@
 
   <!-- Ladataan JSHint -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
+
+  <!-- Ladataan HTMLHint -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.13.1/htmlhint.min.js"></script>
 
   <script>
     // Funktio päivittää merkkilaskurin ja tarkistaa, ylittääkö merkkimäärä sallitun rajan
@@ -147,66 +146,59 @@
             return;
         }
 
-        // HTML-tarkistus
+        // Jos valittu koodityyppi on HTML
         if (codeType === 'html') {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(code, 'text/html');
-            
-            // Tarkistetaan, että HTML on validia
-            var error = doc.querySelector('parsererror');
-            if (error) {
-                resultDiv.textContent = 'Virheellinen HTML: ' + error.textContent;
-                resultDiv.style.color = 'red';
-            } else {
-                resultDiv.textContent = 'HTML on validia!';
-                resultDiv.style.color = 'green';
-            }
+            checkHTML(code);  // Kutsutaan HTML-tarkistusfunktiota
         }
-
-        // JavaScript-tarkistus (ilman ES6 ominaisuuksia)
+        // Jos valittu koodityyppi on JavaScript
         else if (codeType === 'javascript') {
-            var options = {
-                esversion: 5 // Asetetaan tarkistamaan vain ES5 koodi, mutta ilman strict-pakkoa
-            };
-
-            // JSHint tarkistaa ES6 koodin
-            var isValid = JSHINT(code, options);
-            if (isValid) {
-                resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
-                resultDiv.style.color = 'green';
-            } else {
-                resultDiv.textContent = 'Virheitä löytyi:\n';
-                JSHINT.errors.forEach(function (error) {
-                    resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
-                });
-                resultDiv.style.color = 'red';
-            }
-
-            // Jos koodissa on ES6 ominaisuuksia, ilmoitetaan siitä
-            if (isES6(code)) {
-                resultDiv.textContent = 'Virhe: Käytä vain ES5-koodia, ES6 ei ole tuettu.';
-                resultDiv.style.color = 'red';
-                return;
-            }
+            checkJS(code);  // Kutsutaan JS-tarkistusfunktiota
         }
     }
 
-    // Funktio tarkistaa, onko syötetty koodi JavaScriptiä
-    function isJSCode(code) {
-        // Perustarkistus: katsotaan, onko koodissa tyypillisiä JavaScript-ominaisuuksia
-        var jsPatterns = [
-            /\bfunction\b/,
-            /\bvar\b/,
-            /\blet\b/,
-            /\bconst\b/,
-            /\bconsole\.log\b/,
-            /\breturn\b/
-        ];
-        return jsPatterns.some(function(pattern) {
-            return pattern.test(code);
-        });
+    // Funktio HTML-koodin tarkistamiseen
+    function checkHTML(code) {
+        var resultDiv = document.getElementById('result');
+        var htmlHintResults = HTMLHint.verify(code);
+
+        if (htmlHintResults.length === 0) {
+            resultDiv.textContent = 'HTML on validia!';
+            resultDiv.style.color = 'green';
+        } else {
+            resultDiv.textContent = 'Virheitä löytyi:';
+            resultDiv.style.color = 'red';
+
+            // HTMLHint virheilmoitusten tarkistaminen ja näyttäminen
+            htmlHintResults.forEach(function (error) {
+                console.log('Virhe: ', error.message, 'Rivi: ', error.line);  // Virheiden tarkempi tarkastus
+                resultDiv.textContent += '\nRivi ' + error.line + ': ' + error.message;
+            });
+        }
     }
-  
+
+    // Funktio JavaScript-koodin tarkistamiseen
+    function checkJS(code) {
+        var options = { esversion: 5 };  // Määritetään, että käytämme ES5
+        var isValid = JSHINT(code, options);
+        var resultDiv = document.getElementById('result');
+
+        if (isValid) {
+            resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
+            resultDiv.style.color = 'green';
+        } else {
+            resultDiv.textContent = 'Virheitä löytyi:\n';
+            JSHINT.errors.forEach(function (error) {
+                resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
+            });
+            resultDiv.style.color = 'red';
+        }
+    }
+
+    // Funktio tarkistamaan, onko koodi JavaScriptiä
+    function isJSCode(code) {
+        return /function|var|let|const|return|if|else|for|while/.test(code);
+    }
+
     // Päivitetään merkkimäärä
     document.getElementById('codeInput').addEventListener('input', updateCharCount);
   </script>
