@@ -56,6 +56,12 @@
             const errorLog = document.getElementById('errorLog');
             errorLog.textContent = '';  // Tyhjennä aikaisemmat virheilmoitukset
 
+            // Tarkistetaan, onko tekstikenttä tyhjä
+            if (inputCode.trim() === '') {
+                errorLog.textContent = 'Virhe: Kirjoita tai liitä koodia tekstikenttään!';
+                return;
+            }
+
             // Tarkistetaan, onko koodi HTML-, Python- vai JavaScript-koodia
             if (isHTMLCode(inputCode)) {
                 errorLog.textContent = "Virhe: HTML-koodia ei voida tarkistaa. Syötä JavaScript-koodia.";
@@ -75,7 +81,7 @@
                 return;
             }
 
-            // Ilmoitetaan, jos koodi ei sisältänyt virheitä
+            // Ilmoitetaan, jos koodi ei sisällä virheitä
             errorLog.textContent = 'Koodi ei sisällä virheitä!';
         }
 
