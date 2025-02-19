@@ -1,94 +1,85 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Koodin Tarkistus</title>
-  <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f4f4f4;
-    }
-    h1 {
-        color: #2c3e50;
-    }
-    p {
-        color: #34495e;
-        line-height: 1.5;
-    }
-    select, textarea, button {
-        padding: 10px;
-        margin: 10px 0;
-        font-size: 16px;
-    }
-    button {
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #2980b9;
-    }
-    #result {
-        margin-top: 20px;
-        font-weight: bold;
-        font-size: 18px;
-    }
-    #charCount {
-        font-size: 14px;
-    }
-    .warning-text {
-        background-color: #f39c12;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        margin-top: 20px;
-        font-size: 16px;
-    }
-    pre {
-        background-color: #f9f9f9;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        font-size: 14px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koodin Tarkistus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        p {
+            color: #34495e;
+            line-height: 1.5;
+        }
+        select, textarea, button {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        #charCount {
+            font-size: 14px;
+        }
+        .warning-text {
+            background-color: #f39c12;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Koodin Tarkistus</h1>
-  <p>Valitse, tarkistetaanko HTML vai JavaScript -koodi ja syötä koodi alla olevaan kenttään. Kenttään voi syöttää maksimissaan 2000 merkkiä.</p>
+<h1>Koodin Tarkistus</h1>
+<p>Valitse, tarkistetaanko HTML vai JavaScript -koodi ja syötä koodi alla olevaan kenttään. Kenttään voi syöttää maksimissaan 2000 merkkiä.</p>
 
-  <!-- Valitse koodin tyyppi -->
-  <label for="codeType">Valitse koodityyppi:</label>
-  <select id="codeType">
+<!-- Valitse koodin tyyppi -->
+<label for="codeType">Valitse koodityyppi:</label>
+<select id="codeType">
     <option value="html">HTML</option>
     <option value="javascript">JavaScript</option>
-  </select>
-  <br><br>
+</select>
+<br><br>
 
-  <textarea id="codeInput" rows="10" cols="50" maxlength="2000"></textarea>
-  
-  <div id="charCount">Merkkimäärä: 0/2000</div>
+<textarea id="codeInput" rows="10" cols="50" maxlength="2000"></textarea>
 
-  <p class="warning-text">⚠️ Tämä tarkistus tukee vain ES5-koodia. ES6-syntaksia (esim. <code>let</code>, <code>const</code>, <code>class</code>) ei voi tarkistaa.</p>
+<div id="charCount">Merkkimäärä: 0/2000</div>
 
-  <button onclick="checkCode()">Tarkista Koodi</button>
+<p class="warning-text">⚠️ Tämä tarkistus tukee vain ES5-koodia. ES6-syntaksia (esim. <code>let</code>, <code>const</code>, <code>class</code>) ei voi tarkistaa.</p>
 
-  <div id="result"></div>
+<button onclick="checkCode()">Tarkista Koodi</button>
 
-  <!-- Ladataan JSHint -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
+<div id="result"></div>
 
-  <!-- Ladataan HTMLHint -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.13.1/htmlhint.min.js"></script>
+<!-- Ladataan JSHint -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
 
-  <script>
+<!-- Ladataan HTMLHint -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.13.1/htmlhint.min.js"></script>
+
+<script>
     // Funktio päivittää merkkilaskurin ja tarkistaa, ylittääkö merkkimäärä sallitun rajan
     function updateCharCount() {
         var code = document.getElementById('codeInput').value;
@@ -174,12 +165,12 @@
             resultDiv.textContent = 'HTML on validia!';
             resultDiv.style.color = 'green';
         } else {
-            resultDiv.innerHTML = 'Virheitä löytyi:<br>';
+            resultDiv.textContent = 'Virheitä löytyi:';
             resultDiv.style.color = 'red';
 
             // HTMLHint virheilmoitusten tarkistaminen ja näyttäminen
             htmlHintResults.forEach(function (error) {
-                resultDiv.innerHTML += 'Rivi ' + error.line + ': ' + error.message + '<br>';
+                resultDiv.textContent += '\nRivi ' + error.line + ': ' + error.message;
             });
         }
     }
@@ -194,11 +185,11 @@
             resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
             resultDiv.style.color = 'green';
         } else {
-            resultDiv.innerHTML = 'Virheitä löytyi:<br>';
-            resultDiv.style.color = 'red';
+            resultDiv.textContent = 'Virheitä löytyi:\n';
             JSHINT.errors.forEach(function (error) {
-                resultDiv.innerHTML += 'Rivi ' + error.line + ': ' + error.reason + '<br>';
+                resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
             });
+            resultDiv.style.color = 'red';
         }
     }
 
@@ -209,7 +200,7 @@
 
     // Päivitetään merkkimäärä
     document.getElementById('codeInput').addEventListener('input', updateCharCount);
-  </script>
+</script>
 
 </body>
 </html>
