@@ -59,8 +59,8 @@ function checkCode() {
 
 // Funktio HTML-koodin tarkistamiseen
 function checkHTML(code) {
-    const result = HTMLHint.verify(code); // Käytetään HTMLHintin tarkistusta
-    const resultDiv = document.getElementById('result');
+    var result = HTMLHint.verify(code); // Käytetään HTMLHintin tarkistusta
+    var resultDiv = document.getElementById('result');
 
     if (result.length > 0) {
         resultDiv.textContent = 'Virheitä löytyi HTML-koodista:\n';
