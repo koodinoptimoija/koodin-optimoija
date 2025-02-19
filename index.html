@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-    <meta charset="UTF-8">
-    <title>Koodin Tarkistus</title>
-    <script src="https://unpkg.com/htmlhint@0.14.1/dist/htmlhint.min.js"></script>
-    <script src="scriot.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koodin Tarkistus</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Koodin tarkistus</h1>
-    <textarea id="codeInput" placeholder="Syötä koodi..."></textarea><br>
-    <select id="codeType">
-        <option value="html">HTML</option>
-        <option value="javascript">JavaScript</option>
-    </select><br>
-    <button onclick="checkCode()">Tarkista</button>
-    <div id="result"></div>
+
+  <h1>Koodin Tarkistus</h1>
+  <p>Valitse, tarkistetaanko HTML vai JavaScript -koodi ja syötä koodi alla olevaan kenttään. Kenttään voi syöttää maksimissaan 2000 merkkiä.</p>
+
+  <p class="warning-text">⚠️ Tämä tarkistus tukee vain ES5-koodia. ES6-syntaksia (esim. <code>let</code>, <code>const</code>, <code>class</code>) ei voi tarkistaa.</p>
+
+  <label for="codeType">Valitse koodityyppi:</label>
+  <select id="codeType" aria-describedby="codeTypeDesc">
+    <option value="html">HTML</option>
+    <option value="javascript">JavaScript</option>
+  </select>
+  <small id="codeTypeDesc">Valitse tarkistettavan koodin tyyppi.</small>
+  <br><br>
+
+  <textarea id="codeInput" rows="10" cols="50" maxlength="2000" aria-label="Syötä koodisi"></textarea>
+  
+  <div id="charCount">Merkkimäärä: 0/2000</div>
+
+  <button onclick="checkCode()" aria-label="Tarkista koodi">Tarkista Koodi</button>
+
+  <div id="result" aria-live="assertive"></div>
+
+  <!-- Ladataan JSHint -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
+  <script src="script.js"></script>
+
 </body>
 </html>
