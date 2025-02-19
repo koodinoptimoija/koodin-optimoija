@@ -1,4 +1,6 @@
-// Tarkistaa, onko koodissa ES6-syntaksia
+// HTML-validointiin tarvittavat kirjastot
+// Käytetään HTMLHintiä (muista sisällyttää HTMLHint kirjasto HTML-tiedostoon)
+
 function isES6(code) {
     return /let|const|class|import|export/.test(code);
 }
@@ -44,15 +46,16 @@ function checkCode() {
         return;
     }
 
-    // HTML-tarkistus
+    // HTML-tarkistus käyttäen HTMLHintiä
     if (codeType === 'html') {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(code, 'text/html');
-        
-        // Tarkistetaan, että HTML on validia
-        var error = doc.querySelector('parsererror');
-        if (error) {
-            resultDiv.textContent = 'Virheellinen HTML: ' + error.textContent;
+        var HTMLHint = window.HTMLHint; // HTMLHint-kirjasto tulee olla ladattuna HTML-tiedostoon
+        var result = HTMLHint.verify(code);
+
+        if (result.length > 0) {
+            resultDiv.textContent = 'Virheellinen HTML:\n';
+            result.forEach(function (error) {
+                resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.message + '\n';
+            });
             resultDiv.style.color = 'red';
         } else {
             resultDiv.textContent = 'HTML on validia!';
