@@ -11,7 +11,6 @@ function isES6(code) {
 // Funktio HTML-koodin tarkistamiseen HTMLHintin avulla
 function checkHTML(code) {
     const result = HTMLHint.verify(code);
-
     const resultDiv = document.getElementById('result');
 
     if (result.length > 0) {
