@@ -31,21 +31,22 @@ function checkCode() {
         return;
     }
 
-    // HTML-koodin tarkistus
-    if (codeType === 'html') {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(code, 'text/html');
-        
-        // Tarkistetaan, onko HTML:ssä virheitä
-        var error = doc.querySelector('parsererror');
-        if (error) {
-            resultDiv.textContent = 'Virheellinen HTML: ' + error.textContent;
-            resultDiv.style.color = 'red';
-        } else {
-            resultDiv.textContent = 'HTML on validia!';
-            resultDiv.style.color = 'green';
-        }
+   // Funktio HTML-koodin tarkistamiseen HTMLHintin avulla
+function checkHTML(code) {
+    const result = HTMLHint.verify(code);
+
+    if (result.length > 0) {
+        resultDiv.textContent = 'Virheitä löytyi HTML-koodista:\n';
+        result.forEach(function (error) {
+            resultDiv.textContent += `Rivi ${error.line}: ${error.message}\n`;
+        });
+        resultDiv.style.color = 'red';
+    } else {
+        resultDiv.textContent = 'HTML-koodi on validia!';
+        resultDiv.style.color = 'green';
     }
+}
+ 
 
     // JavaScript-koodin tarkistus
     else if (codeType === 'javascript') {
