@@ -48,6 +48,15 @@
         margin-top: 20px;
         font-size: 16px;
     }
+    pre {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
   </style>
 </head>
 <body>
@@ -165,13 +174,12 @@
             resultDiv.textContent = 'HTML on validia!';
             resultDiv.style.color = 'green';
         } else {
-            resultDiv.textContent = 'Virheitä löytyi:';
+            resultDiv.innerHTML = 'Virheitä löytyi:<br>';
             resultDiv.style.color = 'red';
 
             // HTMLHint virheilmoitusten tarkistaminen ja näyttäminen
             htmlHintResults.forEach(function (error) {
-                console.log('Virhe: ', error.message, 'Rivi: ', error.line);  // Virheiden tarkempi tarkastus
-                resultDiv.textContent += '\nRivi ' + error.line + ': ' + error.message;
+                resultDiv.innerHTML += 'Rivi ' + error.line + ': ' + error.message + '<br>';
             });
         }
     }
@@ -186,11 +194,11 @@
             resultDiv.textContent = 'JavaScript-koodi on virheetöntä!';
             resultDiv.style.color = 'green';
         } else {
-            resultDiv.textContent = 'Virheitä löytyi:\n';
-            JSHINT.errors.forEach(function (error) {
-                resultDiv.textContent += 'Rivi ' + error.line + ': ' + error.reason + '\n';
-            });
+            resultDiv.innerHTML = 'Virheitä löytyi:<br>';
             resultDiv.style.color = 'red';
+            JSHINT.errors.forEach(function (error) {
+                resultDiv.innerHTML += 'Rivi ' + error.line + ': ' + error.reason + '<br>';
+            });
         }
     }
 
