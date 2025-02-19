@@ -13,6 +13,13 @@ function updateCharCount() {
     }
 }
 
+// **Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa**
+    if (codeType === 'javascript' && isES6(code)) {
+        resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
+        resultDiv.style.color = 'red';
+        return;
+    }
+
 // Funktio koodin tarkistamiseen
 function checkCode() {
     var code = document.getElementById('codeInput').value;
