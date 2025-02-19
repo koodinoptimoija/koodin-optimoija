@@ -60,6 +60,13 @@ function checkCode() {
         return;
     }
 
+    // **Tarkistus, onko koodi ES6 ja ilmoitus siitä, ettei sitä voi tarkistaa**
+    if (codeType === 'javascript' && isES6(code)) {
+        resultDiv.textContent = '⚠️ Et voi tarkistaa ES6-koodia. Käytä vain ES5-syntaksia!';
+        resultDiv.style.color = 'red';
+        return;
+    }
+
     // HTML-tarkistus
     if (codeType === 'html') {
         checkHTML(code);
